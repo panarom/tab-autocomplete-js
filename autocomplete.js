@@ -28,7 +28,7 @@ AutoComplete = {
   findInput: function(text, position) {
     var reversedCandidate = text.slice(0, position).split('').reverse();
 
-    var spacerIndex = reversedCandidate.indexOf(AutoComplete.SPACER);
+    var spacerIndex = reversedCandidate.indexOf(String.fromCharCode(AutoComplete.SPACER));
     spacerIndex = spacerIndex != -1 ? spacerIndex : reversedCandidate.length;
 
     return reversedCandidate.slice(0, spacerIndex).reverse().join('');
