@@ -4,7 +4,8 @@ AutoComplete = {
   CANDIDATES: ['foo','bar','nga','qux', 'quux'],
 
   findCandidate: function(last) {
-    var matched = $.grep(AutoComplete.CANDIDATES, function(e, i){ return e.match(last); });
+    var matched = $.grep(AutoComplete.CANDIDATES,
+                         function(e, i){ return e.match(new RegExp('^' + last)); });
 
     return matched.length > 0 ?  matched[matched.indexOf(last) + 1] : last;
   },
