@@ -3,11 +3,11 @@ AutoComplete = {
   COMPLETOR: 9,
   CANDIDATES: ['foo','bar','nga','qux', 'quux'],
 
-  findCandidate: function(last) {
-    var matched = $.grep(AutoComplete.CANDIDATES,
-                         function(e, i){ return e.match(new RegExp('^' + last)); });
+  findCandidate: function(candidate) {
+    var regexp = new RegExp('^' + (candidate[0].length > 0 ? candidate[0] : candidate[1]));
+    var matched = $.grep(AutoComplete.CANDIDATES, function(e, i){ return e.match(regexp); });
 
-    return matched.length > 0 ?  matched[matched.indexOf(last) + 1] : last;
+    return matched.length > 0 ?  matched[matched.indexOf(candidate[1]) + 1] : candidate[1];
   },
 
   keydown: function(e) {
@@ -19,18 +19,24 @@ AutoComplete = {
 
   autocomplete: function(target) {
     var start = target.selectionStart;
-    var candidate = AutoComplete.findInput(target.value, start);
+    var candidate = AutoComplete.findInput(target);
     var completion = AutoComplete.findCandidate(candidate);
-    target.value = target.value.replace(candidate, completion);
+
+    target.value = target.value.replace(candidate[1], completion);
     target.selectionStart = start;
   },
 
-  findInput: function(text, position) {
-    var reversedCandidate = text.slice(0, position).split('').reverse();
+  findInput: function(target) {
+    var reversedCandidate = target.value.slice(0, target.selectionEnd).split('').reverse();
 
     var spacerIndex = reversedCandidate.indexOf(String.fromCharCode(AutoComplete.SPACER));
     spacerIndex = spacerIndex != -1 ? spacerIndex : reversedCandidate.length;
 
-    return reversedCandidate.slice(0, spacerIndex).reverse().join('');
+    var candidate = reversedCandidate.slice(0, spacerIndex).reverse();
+
+    var selectedLength = target.selectionStart - target.selectionEnd;
+    var prefix = candidate.slice(0, selectedLength).join('');
+
+    return [prefix, candidate.join('')];
   }
 }
