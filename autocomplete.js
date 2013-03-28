@@ -18,9 +18,11 @@ AutoComplete = {
   },
 
   autocomplete: function(target) {
-    var candidate = AutoComplete.findInput(target.value, target.selectionStart);
+    var start = target.selectionStart;
+    var candidate = AutoComplete.findInput(target.value, start);
     var completion = AutoComplete.findCandidate(candidate);
     target.value = target.value.replace(candidate, completion);
+    target.selectionStart = start;
   },
 
   findInput: function(text, position) {
